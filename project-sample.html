@@ -207,8 +207,9 @@
     background: rgba(247, 246, 241, 0.95);
     backdrop-filter: blur(12px);
     overflow-x: auto;
-    position: relative;
-    z-index: 1;
+    position: sticky;
+    top: 56px;
+    z-index: 90;
   }
 
   .section-tabs a {
@@ -695,7 +696,10 @@
         if (active) active.classList.add('active');
       }
     });
-  }, { threshold: 0.4 });
+  }, {
+    rootMargin: '-20% 0px -70% 0px',
+    threshold: 0
+  });
 
   sections.forEach(s => sectionObs.observe(s));
 </script>
