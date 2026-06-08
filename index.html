@@ -704,6 +704,28 @@
     body { cursor: auto; }
     #cursor, #cursor-ring { display: none; }
   }
+
+  .hero-photo {
+  position: absolute;
+  top: 50%;
+  right: 80px;
+  transform: translateY(-50%);
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1.5px solid var(--accent);
+  opacity: 0;
+  animation: fadeIn 1s var(--ease-out) 1s forwards;
+}
+
+.hero-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  filter: grayscale(15%);
+}
 </style>
 </head>
 <body>
@@ -730,6 +752,9 @@
 <!-- Hero -->
 <section class="hero">
   <div class="hero-left">
+    <div class="hero-photo">
+    <img src="photo.jpg" alt="Gede Keresnadi">
+    </div>
     <p class="hero-label">DATA ANALYST · BALI RAISED, BASE IN JAKARTA</p>
     <h1 class="hero-name">Gede<br><em>Keresnadi</em></h1>
     <p class="hero-role">// turning raw data into clear decisions</p>
