@@ -199,38 +199,40 @@
   }
   .image-placeholder p { font-size: 12px; letter-spacing: 0.08em; }
 
-  /* ── Body content ── */
-  .content-grid {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
+  /* ── Horizontal tab nav ── */
+  .section-tabs {
+    display: flex;
     border-bottom: 1px solid var(--ink-faint);
-    position: relative; z-index: 1;
+    padding: 0 48px;
+    background: rgba(247, 246, 241, 0.95);
+    backdrop-filter: blur(12px);
+    overflow-x: auto;
+    position: relative;
+    z-index: 1;
   }
 
-  .content-sidebar {
-    padding: 64px 48px;
-    border-right: 1px solid var(--ink-faint);
-    position: sticky;
-    top: 56px;
-    height: fit-content;
-  }
-
-  .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
-
-  .sidebar-link {
+  .section-tabs a {
     font-size: 12px; letter-spacing: 0.06em;
     color: var(--ink-muted); text-decoration: none;
-    padding: 8px 0;
-    border-bottom: 1px solid transparent;
+    padding: 16px 24px;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
     transition: color 0.2s, border-color 0.2s;
     cursor: none;
   }
-  .sidebar-link:hover, .sidebar-link.active {
+  .section-tabs a:hover { color: var(--ink); }
+  .section-tabs a.active {
     color: var(--ink);
-    border-bottom-color: var(--ink-faint);
+    border-bottom-color: var(--accent);
   }
 
-  .content-main { padding: 64px 64px 64px 64px; }
+  /* ── Body content ── */
+  .content-main {
+    padding: 64px 48px;
+    max-width: 860px;
+    position: relative;
+    z-index: 1;
+  }
 
   .content-section { margin-bottom: 64px; }
   .content-section:last-child { margin-bottom: 0; }
@@ -411,7 +413,7 @@
     nav { padding: 0 20px; }
     .page-header { grid-template-columns: 1fr; padding: 100px 20px 48px; gap: 32px; }
     .project-image-wrap { height: 240px; }
-    .content-grid { grid-template-columns: 1fr; }
+    .content-main { padding: 40px 20px; }
     .content-sidebar { position: static; padding: 32px 20px; border-right: none; border-bottom: 1px solid var(--ink-faint); }
     .content-main { padding: 40px 20px; }
     .results-grid { grid-template-columns: 1fr 1fr; }
@@ -505,23 +507,17 @@
   </div>
 </div>
 
+<!-- ── Section Tab Nav ── -->
+<div class="section-tabs">
+  <a href="#overview" class="active">Overview</a>
+  <a href="#problem">Problem</a>
+  <a href="#process">Process</a>
+  <a href="#results">Results</a>
+  <a href="#learnings">Learnings</a>
+</div>
+
 <!-- ── Body Content ── -->
-<div class="content-grid">
-
-  <!-- Sidebar nav -->
-  <aside class="content-sidebar">
-    <nav class="sidebar-nav">
-      <!-- EDIT: match these to your section IDs below -->
-      <a href="#overview"  class="sidebar-link active">Overview</a>
-      <a href="#problem"   class="sidebar-link">Problem</a>
-      <a href="#process"   class="sidebar-link">Process</a>
-      <a href="#results"   class="sidebar-link">Results</a>
-      <a href="#learnings" class="sidebar-link">Learnings</a>
-    </nav>
-  </aside>
-
-  <!-- Main content -->
-  <main class="content-main">
+<main class="content-main">
 
     <!-- SECTION: Overview -->
     <div class="content-section reveal" id="overview">
@@ -626,8 +622,7 @@
       <p>I'd also build automated data freshness checks from the start, rather than adding them after users reported stale numbers.</p>
     </div>
 
-  </main>
-</div>
+</main>
 
 <!-- ── Next Project ── -->
 <div class="next-project reveal">
@@ -688,15 +683,15 @@
   }, { threshold: 0.1 });
   reveals.forEach(el => obs.observe(el));
 
-  // Sidebar active link on scroll
+  // Tab nav active on scroll
   const sections = document.querySelectorAll('.content-section');
-  const sideLinks = document.querySelectorAll('.sidebar-link');
+  const tabLinks = document.querySelectorAll('.section-tabs a');
 
   const sectionObs = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        sideLinks.forEach(l => l.classList.remove('active'));
-        const active = document.querySelector(`.sidebar-link[href="#${entry.target.id}"]`);
+        tabLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.section-tabs a[href="#${entry.target.id}"]`);
         if (active) active.classList.add('active');
       }
     });
