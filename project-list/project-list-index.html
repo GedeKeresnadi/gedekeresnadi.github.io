@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects — Gede Keresnadi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;1,9..144,200;1,9..144,300&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<style>
+  :root {
+    --ink: #1a1a18;
+    --ink-muted: #6b6b65;
+    --ink-faint: #c2c2ba;
+    --paper: #f7f6f1;
+    --paper-warm: #eeecea;
+    --accent: #2d4a3e;
+    --accent-light: #e8ede9;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Fraunces', serif;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.6;
+    cursor: none;
+    overflow-x: hidden;
+  }
+
+  /* ── Cursor ── */
+  #cursor {
+    width: 8px; height: 8px;
+    background: var(--ink); border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9999;
+    transition: transform 0.1s ease, background 0.2s ease;
+  }
+  #cursor-ring {
+    width: 32px; height: 32px;
+    border: 1px solid var(--ink); border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9998;
+    transition: transform 0.25s var(--ease-out), opacity 0.3s ease;
+  }
+  body.hovering #cursor { transform: scale(3); background: var(--accent); }
+  body.hovering #cursor-ring { opacity: 0; }
+
+  /* ── Grid lines ── */
+  .grid-line { position: fixed; background: var(--ink-faint); opacity: 0.25; pointer-events: none; z-index: 0; }
+  .grid-line.v { width: 1px; top: 0; bottom: 0; }
+
+  /* ── Nav ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100; padding: 0 48px; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--ink-faint);
+    background: rgba(247, 246, 241, 0.88);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: var(--mono); font-weight: 500;
+    font-size: 13px; letter-spacing: 0.08em;
+    color: var(--ink); text-decoration: none; cursor: none;
+  }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    font-size: 12px; letter-spacing: 0.06em;
+    color: var(--ink-muted); text-decoration: none;
+    transition: color 0.2s; cursor: none;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+  .nav-status {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--accent); letter-spacing: 0.05em;
+  }
+  .nav-status::before {
+    content: ''; width: 6px; height: 6px;
+    background: var(--accent); border-radius: 50%;
+    animation: pulse 2.4s infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* ── Page header ── */
+  .page-header {
+    padding: 120px 48px 64px;
+    border-bottom: 1px solid var(--ink-faint);
+    position: relative; z-index: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 48px;
+  }
+
+  .page-header-left {}
+
+  .page-eyebrow {
+    font-size: 11px; letter-spacing: 0.12em;
+    color: var(--ink-muted); margin-bottom: 16px;
+    opacity: 0; animation: fadeUp 0.7s var(--ease-out) 0.1s forwards;
+  }
+
+  .page-title {
+    font-family: var(--serif);
+    font-size: clamp(40px, 5vw, 72px);
+    font-weight: 200; line-height: 1.05;
+    letter-spacing: -0.02em; color: var(--ink);
+    opacity: 0; animation: fadeUp 0.8s var(--ease-out) 0.2s forwards;
+  }
+  .page-title em { font-style: italic; color: var(--accent); }
+
+  .page-header-right {
+    opacity: 0; animation: fadeIn 0.8s ease 0.5s forwards;
+    text-align: right; flex-shrink: 0;
+  }
+
+  .project-count {
+    font-family: var(--serif);
+    font-size: 56px; font-weight: 200;
+    color: var(--ink-faint); line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .project-count-label {
+    font-size: 11px; letter-spacing: 0.1em; color: var(--ink-muted);
+  }
+
+  /* ── Filter bar ── */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 48px;
+    border-bottom: 1px solid var(--ink-faint);
+    position: sticky;
+    top: 56px;
+    z-index: 90;
+    overflow-x: auto;
+    background: rgba(247, 246, 241, 0.95);
+    backdrop-filter: blur(12px);
+  }
+
+  .filter-label {
+    font-size: 11px; letter-spacing: 0.1em;
+    color: var(--ink-muted); padding-right: 24px;
+    border-right: 1px solid var(--ink-faint);
+    margin-right: 8px; white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .filter-btn {
+    font-family: var(--mono);
+    font-size: 12px; letter-spacing: 0.06em;
+    color: var(--ink-muted); background: none;
+    border: none; padding: 16px 20px;
+    border-bottom: 2px solid transparent;
+    cursor: none; white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .filter-btn:hover { color: var(--ink); }
+  .filter-btn.active {
+    color: var(--ink);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ── Project list (table style) ── */
+  .projects-table {
+    position: relative; z-index: 1;
+    border-bottom: 1px solid var(--ink-faint);
+  }
+
+  .table-header {
+    display: grid;
+    grid-template-columns: 48px 2fr 1fr 1fr 120px 48px;
+    padding: 12px 48px;
+    border-bottom: 1px solid var(--ink-faint);
+    background: var(--paper-warm);
+  }
+
+  .th {
+    font-size: 10px; letter-spacing: 0.12em;
+    color: var(--ink-muted);
+  }
+
+  .project-row {
+    display: grid;
+    grid-template-columns: 48px 2fr 1fr 1fr 120px 48px;
+    padding: 0 48px;
+    border-bottom: 1px solid var(--ink-faint);
+    align-items: center;
+    text-decoration: none; color: var(--ink);
+    transition: background 0.2s;
+    cursor: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-row::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 2px; background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.3s var(--ease-out);
+  }
+
+  .project-row:hover { background: var(--paper-warm); }
+  .project-row:hover::before { transform: scaleY(1); }
+
+  .project-row.hidden { display: none; }
+
+  .row-num {
+    font-size: 11px; letter-spacing: 0.06em;
+    color: var(--ink-faint); padding: 24px 0;
+  }
+
+  .row-title-wrap { padding: 24px 24px 24px 0; }
+
+  .row-tag {
+    font-size: 10px; letter-spacing: 0.1em;
+    color: var(--ink-muted); margin-bottom: 6px;
+  }
+
+  .row-title {
+    font-family: var(--serif);
+    font-size: 20px; font-weight: 200;
+    color: var(--ink); letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  .row-title em { font-style: italic; color: var(--accent); }
+
+  .row-desc {
+    font-size: 12px; color: var(--ink-muted);
+    line-height: 1.6; margin-top: 6px;
+    max-width: 360px;
+  }
+
+  .row-tools {
+    padding: 24px 16px;
+    display: flex; flex-wrap: wrap; gap: 4px;
+    align-content: center;
+  }
+
+  .tool-chip {
+    font-size: 10px; letter-spacing: 0.06em;
+    color: var(--accent); background: var(--accent-light);
+    padding: 2px 8px;
+  }
+
+  .row-year {
+    font-size: 12px; color: var(--ink-muted);
+    padding: 24px 16px;
+  }
+
+  .row-status { padding: 24px 16px; }
+
+  .status-badge {
+    font-size: 10px; letter-spacing: 0.08em;
+    padding: 4px 10px; display: inline-block;
+  }
+  .status-badge.live {
+    color: var(--accent); background: var(--accent-light);
+  }
+  .status-badge.wip {
+    color: var(--ink-muted); background: var(--paper-warm);
+    border: 1px solid var(--ink-faint);
+  }
+
+  .row-arrow {
+    font-size: 16px; color: var(--ink-faint);
+    padding: 24px 0; text-align: right;
+    transition: color 0.2s, transform 0.3s var(--ease-out);
+    display: block;
+  }
+  .project-row:hover .row-arrow {
+    color: var(--ink);
+    transform: translate(4px, -4px);
+  }
+
+  /* ── Featured project (large card) ── */
+  .featured-section {
+    position: relative; z-index: 1;
+    border-bottom: 1px solid var(--ink-faint);
+  }
+
+  .featured-header {
+    padding: 48px 48px 0;
+    display: flex; align-items: center;
+    justify-content: space-between;
+  }
+
+  .featured-label {
+    font-size: 11px; letter-spacing: 0.12em; color: var(--ink-muted);
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .featured-card {
+    display: block; text-decoration: none; color: var(--ink);
+    padding: 40px 48px;
+    border-right: 1px solid var(--ink-faint);
+    border-top: 1px solid var(--ink-faint);
+    transition: background 0.25s;
+    cursor: none; position: relative; overflow: hidden;
+  }
+  .featured-card:last-child { border-right: none; }
+  .featured-card:hover { background: var(--paper-warm); }
+
+  .featured-card::after {
+    content: '↗';
+    position: absolute; top: 40px; right: 48px;
+    font-size: 18px; color: var(--ink-faint);
+    transition: color 0.2s, transform 0.3s var(--ease-out);
+  }
+  .featured-card:hover::after { color: var(--ink); transform: translate(4px, -4px); }
+
+  .featured-img {
+    width: 100%; aspect-ratio: 16/9;
+    background: var(--paper-warm);
+    border: 1px solid var(--ink-faint);
+    margin-bottom: 24px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .featured-img img { width: 100%; height: 100%; object-fit: cover; }
+  .featured-img .img-placeholder {
+    font-size: 11px; letter-spacing: 0.08em; color: var(--ink-faint);
+  }
+
+  .featured-tag {
+    font-size: 10px; letter-spacing: 0.12em;
+    color: var(--ink-muted); margin-bottom: 10px;
+  }
+
+  .featured-title {
+    font-family: var(--serif);
+    font-size: 26px; font-weight: 200;
+    letter-spacing: -0.01em; line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .featured-title em { font-style: italic; color: var(--accent); }
+
+  .featured-desc {
+    font-size: 12px; color: var(--ink-muted);
+    line-height: 1.7; margin-bottom: 20px;
+    max-width: 400px;
+  }
+
+  .featured-tools { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  /* ── Stats strip ── */
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--ink-faint);
+    position: relative; z-index: 1;
+  }
+
+  .stat-block {
+    padding: 40px 48px;
+    border-right: 1px solid var(--ink-faint);
+  }
+  .stat-block:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 44px; font-weight: 200;
+    color: var(--ink); line-height: 1; margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 11px; letter-spacing: 0.1em; color: var(--ink-muted);
+  }
+
+  /* ── Empty state ── */
+  .empty-state {
+    padding: 80px 48px;
+    display: none; text-align: center;
+  }
+  .empty-state.visible { display: block; }
+  .empty-state p {
+    font-size: 13px; color: var(--ink-muted); letter-spacing: 0.04em;
+  }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--ink-faint);
+    padding: 28px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    position: relative; z-index: 1;
+  }
+  footer p { font-size: 11px; letter-spacing: 0.06em; color: var(--ink-muted); }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a {
+    font-size: 11px; letter-spacing: 0.06em;
+    color: var(--ink-muted); text-decoration: none;
+    transition: color 0.2s; cursor: none;
+  }
+  .footer-links a:hover { color: var(--ink); }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  .reveal {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .table-header { display: none; }
+    .project-row {
+      grid-template-columns: 1fr 48px;
+      grid-template-rows: auto auto auto;
+      padding: 24px 20px;
+    }
+    .row-num { display: none; }
+    .row-title-wrap { grid-column: 1; grid-row: 1; padding: 0 0 8px; }
+    .row-tools { grid-column: 1; grid-row: 2; padding: 0 0 8px; }
+    .row-year { display: none; }
+    .row-status { grid-column: 1; grid-row: 3; padding: 0; }
+    .row-arrow { grid-column: 2; grid-row: 1 / 4; align-self: center; text-align: right; padding: 0; }
+    .featured-grid { grid-template-columns: 1fr; }
+    .featured-card { border-right: none; padding: 32px 20px; }
+    .stats-strip { grid-template-columns: 1fr 1fr; }
+    .stat-block:nth-child(2) { border-right: none; }
+    .stat-block:nth-child(3) { border-top: 1px solid var(--ink-faint); }
+    .stat-block { padding: 28px 20px; }
+    nav { padding: 0 20px; }
+    .page-header { padding: 100px 20px 48px; flex-direction: column; align-items: flex-start; }
+    .page-header-right { text-align: left; }
+    .filter-bar { padding: 0 20px; }
+    footer { flex-direction: column; gap: 16px; padding: 24px 20px; }
+    body { cursor: auto; }
+    #cursor, #cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<div class="grid-line v" style="left: 48px;"></div>
+<div class="grid-line v" style="right: 48px;"></div>
+
+<!-- ── Nav ── -->
+<nav>
+  <a href="index.html" class="nav-logo">G'day It's Gede</a>
+  <ul class="nav-links">
+    <li><a href="projects.html" class="active">projects</a></li>
+    <li><a href="index.html#skills">skills</a></li>
+    <li><a href="index.html#about">about</a></li>
+    <li><a href="mailto:your@email.com">contact</a></li>
+  </ul>
+  <span class="nav-status">open to opportunities</span>
+</nav>
+
+<!-- ── Page Header ── -->
+<header class="page-header">
+  <div class="page-header-left">
+    <p class="page-eyebrow">ALL WORK · 2022 — 2026</p>
+    <h1 class="page-title">Every<br><em>project,</em><br>documented.</h1>
+  </div>
+  <div class="page-header-right">
+    <div class="project-count" id="visible-count">04</div>
+    <div class="project-count-label">PROJECTS</div>
+  </div>
+</header>
+
+<!-- ── Stats strip ── -->
+<div class="stats-strip">
+  <div class="stat-block reveal">
+    <div class="stat-num">3.5+</div>
+    <div class="stat-label">YEARS EXPERIENCE</div>
+  </div>
+  <div class="stat-block reveal">
+    <div class="stat-num">5</div>
+    <div class="stat-label">DOMAINS COVERED</div>
+  </div>
+  <div class="stat-block reveal">
+    <div class="stat-num">20+</div>
+    <div class="stat-label">DASHBOARDS SHIPPED</div>
+  </div>
+  <div class="stat-block reveal">
+    <div class="stat-num">3</div>
+    <div class="stat-label">CORE TOOLS</div>
+  </div>
+</div>
+
+<!-- ── Filter bar ── -->
+<div class="filter-bar">
+  <span class="filter-label">FILTER</span>
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="hr">HR Analytics</button>
+  <button class="filter-btn" data-filter="retail">Retail</button>
+  <button class="filter-btn" data-filter="operations">Operations</button>
+  <button class="filter-btn" data-filter="finance">Finance BI</button>
+</div>
+
+<!-- ── Featured projects ── -->
+<section class="featured-section reveal">
+  <div class="featured-header">
+    <span class="featured-label">FEATURED</span>
+  </div>
+
+  <div class="featured-grid">
+
+    <!-- FEATURED 01 — EDIT -->
+    <a href="project-attrition.html" class="featured-card" data-category="hr">
+      <div class="featured-img">
+        <!-- <img src="project-attrition-cover.jpg" alt="Attrition Dashboard"> -->
+        <span class="img-placeholder">ADD SCREENSHOT</span>
+      </div>
+      <p class="featured-tag">HR ANALYTICS</p>
+      <h2 class="featured-title">Employee <em>Attrition</em><br>Dashboard</h2>
+      <p class="featured-desc">Centralized attrition analytics identifying key resignation drivers across departments, with predictive risk scoring.</p>
+      <div class="featured-tools">
+        <span class="tool-chip">BigQuery</span>
+        <span class="tool-chip">Looker Studio</span>
+        <span class="tool-chip">SQL</span>
+      </div>
+    </a>
+
+    <!-- FEATURED 02 — EDIT -->
+    <a href="project-bef.html" class="featured-card" data-category="retail">
+      <div class="featured-img">
+        <!-- <img src="project-bef-cover.jpg" alt="BEF Scorecard"> -->
+        <span class="img-placeholder">ADD SCREENSHOT</span>
+      </div>
+      <p class="featured-tag">RETAIL</p>
+      <h2 class="featured-title">Store Performance<br><em>BEF Scorecard</em></h2>
+      <p class="featured-desc">Interactive scorecard analyzing 21 stores across 5 regions with regional benchmarks and month-over-month trends.</p>
+      <div class="featured-tools">
+        <span class="tool-chip">HTML/JS</span>
+        <span class="tool-chip">SQL</span>
+        <span class="tool-chip">Excel</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ── All projects table ── -->
+<section class="projects-table">
+
+  <div class="table-header">
+    <span class="th">#</span>
+    <span class="th">PROJECT</span>
+    <span class="th">TOOLS</span>
+    <span class="th">YEAR</span>
+    <span class="th">STATUS</span>
+    <span class="th"></span>
+  </div>
+
+  <!-- ROW 01 — EDIT: duplicate this block for each project -->
+  <a href="project-attrition.html" class="project-row reveal" data-category="hr">
+    <span class="row-num">01</span>
+    <div class="row-title-wrap">
+      <p class="row-tag">HR ANALYTICS</p>
+      <h3 class="row-title">Employee <em>Attrition</em> Dashboard</h3>
+      <p class="row-desc">End-to-end attrition analytics across departments with predictive risk scoring.</p>
+    </div>
+    <div class="row-tools">
+      <span class="tool-chip">BigQuery</span>
+      <span class="tool-chip">Looker Studio</span>
+      <span class="tool-chip">SQL</span>
+    </div>
+    <span class="row-year">2024</span>
+    <span class="row-status"><span class="status-badge live">LIVE</span></span>
+    <span class="row-arrow">↗</span>
+  </a>
+
+  <!-- ROW 02 — EDIT -->
+  <a href="project-bef.html" class="project-row reveal" data-category="retail">
+    <span class="row-num">02</span>
+    <div class="row-title-wrap">
+      <p class="row-tag">RETAIL</p>
+      <h3 class="row-title">Store Performance <em>BEF Scorecard</em></h3>
+      <p class="row-desc">21 stores, 5 regions — scorecard with alerts and benchmark comparisons.</p>
+    </div>
+    <div class="row-tools">
+      <span class="tool-chip">HTML/JS</span>
+      <span class="tool-chip">SQL</span>
+      <span class="tool-chip">Excel</span>
+    </div>
+    <span class="row-year">2024</span>
+    <span class="row-status"><span class="status-badge live">LIVE</span></span>
+    <span class="row-arrow">↗</span>
+  </a>
+
+  <!-- ROW 03 — EDIT -->
+  <a href="project-apps-script.html" class="project-row reveal" data-category="operations">
+    <span class="row-num">03</span>
+    <div class="row-title-wrap">
+      <p class="row-tag">OPERATIONS</p>
+      <h3 class="row-title">Restaurant Asset <em>Inspection System</em></h3>
+      <p class="row-desc">Web app for field-level asset inspection logging with automated reporting.</p>
+    </div>
+    <div class="row-tools">
+      <span class="tool-chip">Apps Script</span>
+      <span class="tool-chip">Google Sheets</span>
+    </div>
+    <span class="row-year">2025</span>
+    <span class="row-status"><span class="status-badge live">LIVE</span></span>
+    <span class="row-arrow">↗</span>
+  </a>
+
+  <!-- ROW 04 — EDIT -->
+  <a href="project-cashflow.html" class="project-row reveal" data-category="finance">
+    <span class="row-num">04</span>
+    <div class="row-title-wrap">
+      <p class="row-tag">FINANCE BI</p>
+      <h3 class="row-title">Construction Agency <em>Cash Flow Monitor</em></h3>
+      <p class="row-desc">BI monitoring for a 15-project portfolio tracking cash flow vs budget in real time.</p>
+    </div>
+    <div class="row-tools">
+      <span class="tool-chip">Looker Studio</span>
+      <span class="tool-chip">BigQuery</span>
+      <span class="tool-chip">openpyxl</span>
+    </div>
+    <span class="row-year">2025</span>
+    <span class="row-status"><span class="status-badge wip">IN PROGRESS</span></span>
+    <span class="row-arrow">↗</span>
+  </a>
+
+  <!-- ADD MORE ROWS HERE — just duplicate a .project-row block above -->
+
+  <div class="empty-state" id="empty-state">
+    <p>NO PROJECTS IN THIS CATEGORY YET</p>
+  </div>
+
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <p>© 2026 Gede Keresnadi · built with care</p>
+  <div class="footer-links">
+    <a href="https://github.com/yourhandle" target="_blank">GitHub</a>
+    <a href="https://linkedin.com/in/yourhandle" target="_blank">LinkedIn</a>
+    <a href="mailto:your@email.com">Email</a>
+  </div>
+</footer>
+
+<script>
+  // ── Custom cursor ──
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 4}px, ${my - 4}px)`;
+  });
+
+  (function animateRing() {
+    rx += (mx - rx - 16) * 0.12;
+    ry += (my - ry - 16) * 0.12;
+    ring.style.transform = `translate(${rx}px, ${ry}px)`;
+    requestAnimationFrame(animateRing);
+  })();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+  });
+
+  // ── Scroll reveal ──
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        entry.target.style.transitionDelay = (i % 4) * 0.07 + 's';
+        entry.target.classList.add('visible');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => obs.observe(el));
+
+  // ── Filter ──
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const projectRows = document.querySelectorAll('.project-row');
+  const featuredCards = document.querySelectorAll('.featured-card');
+  const countEl = document.getElementById('visible-count');
+  const emptyState = document.getElementById('empty-state');
+
+  function updateCount() {
+    const visible = document.querySelectorAll('.project-row:not(.hidden)').length;
+    countEl.textContent = String(visible).padStart(2, '0');
+    emptyState.classList.toggle('visible', visible === 0);
+  }
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filter = btn.dataset.filter;
+
+      projectRows.forEach(row => {
+        const match = filter === 'all' || row.dataset.category === filter;
+        row.classList.toggle('hidden', !match);
+      });
+
+      featuredCards.forEach(card => {
+        const match = filter === 'all' || card.dataset.category === filter;
+        card.style.display = match ? '' : 'none';
+      });
+
+      updateCount();
+    });
+  });
+</script>
+</body>
+</html>
