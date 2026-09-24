@@ -780,6 +780,431 @@
 @media (max-width: 768px) {
   .view-all-cta { padding: 24px 20px; flex-direction: column; align-items: flex-start; gap: 8px; }
 }
+
+    /* ── Additional responsive refinements ── */
+    @media (max-width: 900px) {
+      nav {
+        padding: 0 24px;
+      }
+
+      .nav-links {
+        gap: 18px;
+      }
+
+      .nav-status {
+        display: none;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+
+      .hero-left {
+        padding-right: 0;
+      }
+
+      .hero-right {
+        padding-left: 0;
+      }
+
+      .hero-photo {
+        right: 32px;
+        width: 280px;
+        height: 280px;
+      }
+
+      .project-card,
+      .skills-col,
+      .about-content,
+      .about-meta {
+        padding-left: 32px;
+        padding-right: 32px;
+      }
+
+      .section-header {
+        padding-left: 32px;
+        padding-right: 32px;
+      }
+
+      footer {
+        padding-left: 32px;
+        padding-right: 32px;
+      }
+
+      .view-all-cta {
+        padding-left: 32px;
+        padding-right: 32px;
+      }
+
+      .grid-line.v:first-of-type {
+        left: 24px !important;
+      }
+
+      .grid-line.v:nth-of-type(2) {
+        right: 24px !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        font-size: 13px;
+        cursor: auto;
+      }
+
+      #cursor,
+      #cursor-ring {
+        display: none;
+      }
+
+      nav {
+        height: 58px;
+        padding: 0 20px;
+      }
+
+      .nav-logo {
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .nav-links {
+        gap: 14px;
+      }
+
+      .nav-links a {
+        font-size: 10px;
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 58px 20px 0;
+      }
+
+      .hero-left {
+        min-width: 0;
+        padding: 34px 0 36px;
+        align-items: flex-start;
+      }
+
+      /* The photo is no longer absolutely positioned on mobile,
+         so it cannot overlap the hero copy. */
+      .hero-photo {
+        position: relative;
+        top: auto;
+        right: auto;
+        transform: none;
+        align-self: center;
+        order: -1;
+        width: min(58vw, 230px);
+        height: min(58vw, 230px);
+        margin: 0 auto 30px;
+      }
+
+      .hero-label {
+        font-size: 9px;
+        line-height: 1.5;
+        margin-bottom: 22px;
+      }
+
+      .hero-name {
+        font-size: clamp(48px, 15vw, 68px);
+        line-height: 0.98;
+      }
+
+      .hero-role {
+        font-size: 11px;
+        line-height: 1.5;
+        margin-bottom: 28px;
+      }
+
+      .hero-desc {
+        max-width: 100%;
+        font-size: 12px;
+        line-height: 1.75;
+        margin-bottom: 30px;
+      }
+
+      .hero-cta {
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .btn {
+        min-height: 44px;
+        padding: 11px 18px;
+        font-size: 11px;
+      }
+
+      .hero-right {
+        min-width: 0;
+        padding: 34px 0 48px;
+      }
+
+      .data-label {
+        font-size: 9px;
+        margin-bottom: 20px;
+      }
+
+      .tool-list {
+        margin-bottom: 30px;
+      }
+
+      .tool-item {
+        gap: 14px;
+        padding: 15px 0;
+      }
+
+      .tool-logo {
+        width: 40px;
+        height: 40px;
+      }
+
+      .tool-logo svg {
+        width: 28px;
+        height: 28px;
+      }
+
+      .tool-name {
+        font-size: 12px;
+      }
+
+      .tool-desc {
+        font-size: 9px;
+        line-height: 1.5;
+      }
+
+      .hero-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .hero-stat {
+        padding: 15px 8px;
+      }
+
+      .hero-stat-num {
+        font-size: 23px;
+      }
+
+      .hero-stat-label {
+        font-size: 8px;
+      }
+
+      .scroll-indicator {
+        display: none;
+      }
+
+      .section-header {
+        padding: 36px 20px 24px;
+        align-items: flex-start;
+      }
+
+      .section-title {
+        font-size: clamp(27px, 8vw, 36px);
+      }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .project-card {
+        padding: 30px 20px;
+        border-right: none;
+      }
+
+      .project-tag {
+        margin-bottom: 16px;
+      }
+
+      .project-title {
+        font-size: 21px;
+      }
+
+      .project-desc {
+        font-size: 11px;
+        line-height: 1.7;
+      }
+
+      .skills-section {
+        grid-template-columns: 1fr;
+      }
+
+      .skills-col {
+        padding: 30px 20px;
+        border-right: none;
+      }
+
+      .skills-col + .skills-col {
+        border-top: 1px solid var(--ink-faint);
+      }
+
+      .skill-item {
+        gap: 16px;
+      }
+
+      .skill-name {
+        font-size: 12px;
+      }
+
+      .about-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .about-content {
+        padding: 38px 20px;
+        border-right: none;
+      }
+
+      .about-content p {
+        font-size: clamp(18px, 5.5vw, 23px);
+      }
+
+      .about-meta {
+        padding: 30px 20px;
+      }
+
+      .meta-block {
+        margin-bottom: 24px;
+      }
+
+      .meta-value {
+        font-size: 12px;
+        overflow-wrap: anywhere;
+      }
+
+      .view-all-cta {
+        padding: 24px 20px;
+        gap: 10px;
+      }
+
+      .view-all-left {
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .view-all-title {
+        font-size: 20px;
+      }
+
+      footer {
+        padding: 22px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+      }
+
+      .footer-links {
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+
+      .ticker span {
+        gap: 20px;
+        padding-right: 40px;
+        font-size: 9px;
+      }
+
+      .grid-line.v {
+        display: none;
+      }
+    }
+
+    @media (max-width: 420px) {
+      nav {
+        padding: 0 16px;
+      }
+
+      .nav-links {
+        gap: 10px;
+      }
+
+      .nav-links a {
+        font-size: 9px;
+        letter-spacing: 0.03em;
+      }
+
+      .nav-logo {
+        font-size: 10px;
+        letter-spacing: 0.04em;
+      }
+
+      .hero {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .hero-photo {
+        width: 190px;
+        height: 190px;
+        margin-bottom: 24px;
+      }
+
+      .hero-name {
+        font-size: 50px;
+      }
+
+      .hero-cta .btn {
+        flex: 1 1 auto;
+        justify-content: center;
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stat {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .project-card,
+      .skills-col,
+      .about-content,
+      .about-meta,
+      .section-header,
+      .view-all-cta {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .section-header {
+        padding-top: 30px;
+      }
+
+      .section-num {
+        font-size: 9px;
+      }
+
+      .tool-item {
+        align-items: flex-start;
+      }
+
+      .tool-desc {
+        max-width: 230px;
+      }
+
+      .footer-links {
+        gap: 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
 </style>
 </head>
 <body>
@@ -1023,7 +1448,7 @@
         </div>
       </div>
       <div class="skill-item">
-        <span class="skill-name">Google Appssheet</span>
+        <span class="skill-name">Google AppSheet</span>
         <div class="skill-dots">
           <div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div>
         </div>
@@ -1060,7 +1485,7 @@
   <div class="about-strip">
     <div class="about-content reveal">
       <p>
-        I'm a data analyst base in <em>Jakarta, Indonesia</em> with 3.5+ years turning messy organizational data into clear, actionable insight. My background spans HR analytics, retail performance, and operational BI — with a consistent focus on building tools people <em>actually use</em>.
+        I'm a data analyst based in <em>Jakarta, Indonesia</em> with 3.5+ years turning messy organizational data into clear, actionable insight. My background spans HR analytics, retail performance, and operational BI — with a consistent focus on building tools people <em>actually use</em>.
       </p>
       <p style="margin-top: 1.5rem;">
         Beyond analytics, I enjoy building digital products, experimenting with Framer, and bringing creative ideas to life. Whether you're looking to improve reporting, uncover insights, or launch something new, I'd love to collaborate.
